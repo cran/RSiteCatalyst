@@ -2,7 +2,13 @@
 #QueueOvertime supports one breakdown element with multiple element values, 
 #multiple metrics, and single segment
 
-QueueOvertime <- function(reportSuiteID, dateFrom, dateTo, metrics, dateGranularity="", segment_id="") {
+QueueOvertime <- function(reportSuiteID, dateFrom, dateTo, metrics, dateGranularity="", segment_id="", anomalyDetection="", currentData="") {
+
+  if(anomalyDetection == "1" & dateGranularity!="day") {
+    stop("Error: Anomaly Detection only provided for day granularity")
+  }
+
+
   
   #Loop over the metrics list, appending proper curly braces
   metrics_conv <- lapply(metrics, function(x) paste('{"id":', '"', x, '"', '}', sep=""))
@@ -16,9 +22,11 @@ QueueOvertime <- function(reportSuiteID, dateFrom, dateTo, metrics, dateGranular
     "dateTo":"%s",
     "dateGranularity":"%s",
     "metrics": [%s],
-    "segment_id": "%s"
+    "segment_id": "%s",
+    "anomalyDetection": "%s",
+    "currentData": "%s"
   }
-}', reportSuiteID, dateFrom, dateTo, dateGranularity, metrics_final, segment_id)
+}', reportSuiteID, dateFrom, dateTo, dateGranularity, metrics_final, segment_id, anomalyDetection, currentData)
 
 #1.  Send API request to build report- QueueOvertime
 json_queue <- postRequest("Report.QueueOvertime", json_request)
@@ -27,13 +35,14 @@ if(json_queue$status == 200) {
 #Convert JSON to list
 queue_resp <- content(json_queue)
 } else {
-  return(jsonResponseError(json_queue$status))
+  stop(jsonResponseError(json_queue$status))
+  
 }
 
 #If response returns an error, return error message. Else, continue with
 #capturing report ID
 if(queue_resp[1] != "queued" ) {
-  return(print("Error: Likely a syntax error or missing required argument to QueueOvertime function"))
+  stop("Error: Likely a syntax error or missing required argument to QueueOvertime function")
 } else {
   reportID <- queue_resp[[3]] 
 }
@@ -44,13 +53,13 @@ print("Checking report status: Attempt Number 1")
 reportDone <- GetStatus(reportID)
 
 if(reportDone == "failed") {
-  return(print("Report Failed: Check for json_request syntax error"))
+  stop("Report Failed: Check for json_request syntax error")
 }
 
 num_tries <- 1
-while(reportDone != "done" && num_tries < 10){
+while(reportDone != "done" && num_tries < 120){
   num_tries <- num_tries + 1
-  Sys.sleep(10)
+  Sys.sleep(5)
   print(paste("Checking report status: Attempt Number", num_tries))
   reportDone <- GetStatus(reportID)
   
@@ -58,7 +67,7 @@ while(reportDone != "done" && num_tries < 10){
 
 #If reportDone still not done, return an error. Else, continue to GetReport
 if(reportDone !="done"){
-  return(print("Error: Number of Tries Exceeded"))
+ stop("Error: Number of Tries Exceeded")
 } else {
   
   #Write formatted JSON string to a 5-item list
@@ -83,7 +92,26 @@ counts <- lapply(data, "[[", "counts") # Just the "counts" column
 counts_df <- ldply(counts, quickdf) # counts as DF
 names(counts_df) <- lapply(result[[5]]$metrics, "[[", "id") #assign names to counts_df
 
-return(cbind(rows_df, counts_df)) #append rows info with counts
+#Parse anomalyDetection if requested  
+
+if(anomalyDetection == "1" & dateGranularity == "day") {
+
+  ub <- lapply(data, "[[", "upper_bounds") # Upper Bounds
+  ub_df <- ldply(ub, quickdf) # upper bound as DF
+  names(ub_df) <- lapply(lapply(result[[5]]$metrics, "[[", "id"), function(x) paste(x, "_upper", sep=""))
+  
+  forecasts <- lapply(data, "[[", "forecasts") # forecasted value
+  forecasts_df <- ldply(forecasts, quickdf) # forecast as DF
+  names(forecasts_df) <- lapply(lapply(result[[5]]$metrics, "[[", "id"), function(x) paste(x, "_forecast", sep=""))
+  
+  lb <- lapply(data, "[[", "lower_bounds") # lower Bounds
+  lb_df <- ldply(lb, quickdf) # lower bound as DF
+  names(lb_df) <- lapply(lapply(result[[5]]$metrics, "[[", "id"), function(x) paste(x, "_lower", sep=""))
+  
+  return(cbind(rows_df, counts_df, ub_df, forecasts_df, lb_df)) #return after anomaly parsing
+} #End parsing anomalyDetection
+
+return(cbind(rows_df, counts_df)) #append rows info with counts if not anomaly parsing
 
 } #End function bracket
 

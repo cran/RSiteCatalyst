@@ -10,18 +10,19 @@ SCAuth <- function(user_name, shared_secret){
   
   error_flag = 0
   if(str_count(user_name, ":") != 1){
-    print("Error: Check User Name. Must have 'username:company' pattern")
+    warning("Check User Name. Must have 'username:company' pattern")
     error_flag = error_flag + 1
   }
   if(nchar(shared_secret) != 32){
-    print("Error: Shared Secret does not have valid number of characters (32)")
+    warning("Shared Secret does not have valid number of characters (32)")
     error_flag = error_flag + 1
   }
   
   if(error_flag >0){
-    return(print("Object 'SCCredentials' not created due to errors"))
+    stop("Authentication failed due to errors")
   } else {
   
+    
   company <- str_split_fixed(user_name, ":", 2)
     
   #Create SCCredentials object in Global Environment
@@ -30,6 +31,6 @@ SCAuth <- function(user_name, shared_secret){
   #Assign endpoint to 3rd position in credentials
   SCCredentials[3] <<- GetEndpoint(company[2])
 
-  
+  print("Authentication succeeded")
   }
 } #End function bracket  

@@ -3,12 +3,17 @@
 #(revenue, orders, views, and so forth) and element 
 #(product, category, page, and so forth).
 
-QueueTrended <- function(reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, top="", startingWith="", selected= "", segment_id="") {
+
+QueueTrended <- function(reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, top="", startingWith="", selected= "", segment_id="", anomalyDetection="", currentData="") {
 
   #Error check to see if function call using both parameters
 if(top!= "" && selected != "") {
   
-  return(print("Error:  Use 'top' or 'startingWith' arguments, not both"))
+  stop("Use 'top' or 'startingWith' arguments, not both")
+}
+
+if(anomalyDetection == "1" & dateGranularity!="day") {
+  stop("Error: Anomaly Detection only provided for day granularity")
 }
   
 #Build JSON request for "Top" functionality
@@ -22,9 +27,11 @@ if(top != "") {
      "dateGranularity":"%s",
      "metrics": [{"id":"%s"}],
      "elements" : [{"id":"%s", "top": "%s", "startingWith": "%s" }],
-     "segment_id": "%s"
+     "segment_id": "%s",
+     "anomalyDetection": "%s",
+     "currentData": "%s"
     }
-}', reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, top, startingWith, segment_id)
+}', reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, top, startingWith, segment_id, anomalyDetection, currentData)
   
 }  else {
   
@@ -40,9 +47,11 @@ if(top != "") {
      "dateGranularity":"%s",
      "metrics": [{"id":"%s"}],
      "elements" : [{"id":"%s", "selected": %s }],
-     "segment_id": "%s"
+     "segment_id": "%s",
+     "anomalyDetection": "%s",
+     "currentData": "%s"
     }
-}', reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, selected, segment_id)
+}', reportSuiteID, dateFrom, dateTo, dateGranularity, metric, element, selected, segment_id, anomalyDetection, currentData)
   
 }
 
@@ -53,30 +62,31 @@ if(json_queue$status == 200) {
   #Convert JSON to list
   queue_resp <- content(json_queue)
 } else {
-  return(jsonResponseError(json_queue$status))
+  stop(jsonResponseError(json_queue$status))
+  
 }
 
 #If response returns an error, return error message. Else, continue with
 #capturing report ID
 if(queue_resp[1] != "queued" ) {
-  return(print("Error: Likely a syntax error in arguments to QueueTrended function"))
+  stop("Likely a syntax error in arguments to QueueTrended function")
 } else {
   reportID <- queue_resp[[3]] 
 }
 
 #Check to see whether report is done. while loop with 
-#Sys.sleep waits 10 seconds before trying again
+#Sys.sleep waits 2 seconds before trying again
 print("Checking report status: Attempt Number 1")
 reportDone <- GetStatus(reportID)
 
 if(reportDone == "failed") {
-  return(print("Report Failed: Check for json_request syntax error"))
+  stop("Report Failed: Check for json_request syntax error")
 }
 
 num_tries <- 1
-while(reportDone != "done" && num_tries < 10){
+while(reportDone != "done" && num_tries < 120){
   num_tries <- num_tries + 1
-  Sys.sleep(10)
+  Sys.sleep(5)
   print(paste("Checking report status: Attempt Number", num_tries))
   reportDone <- GetStatus(reportID)
   
@@ -84,7 +94,7 @@ while(reportDone != "done" && num_tries < 10){
 
 #If reportDone still not done, return an error. Else, continue to GetReport
 if(reportDone !="done"){
-  return(print("Error: Number of Tries Exceeded"))
+  stop("Error: Number of Tries Exceeded")
 } else {
   
   #Write formatted JSON string to a 5-item list
@@ -114,7 +124,10 @@ for(element in 1:length(data)) {
 }
 
 #Check to see if enough columns for hour
-if(ncol(granular_table) == 8){
+if(anomalyDetection== 1){
+names(granular_table) <- c(element_requested, "name", "year", "month", "day",metric_requested, paste(metric_requested, "_upper", sep=""), paste(metric_requested, "_lower", sep=""), paste(metric_requested, "_forecast", sep=""), paste(metric_requested, "_forselectedelements", sep=""))  
+}
+else if(ncol(granular_table) == 8){
 names(granular_table) <- c(element_requested, "name", "year", "month", "day","hour", metric_requested, paste(metric_requested, "_forselectedelements", sep=""))
 } else {
 names(granular_table) <- c(element_requested, "name", "year", "month", "day", metric_requested, paste(metric_requested, "_forselectedelements", sep=""))

@@ -1,6 +1,6 @@
-00b747fa934bbd028add45ee794d027d *DESCRIPTION
-a53a28cfaa74bb0db176f4b12870d41c *NAMESPACE
-a0a24e619b4f01aa7ad687381e03ec26 *NEWS
+475f574cd91598709fef6b03dcaef5c0 *DESCRIPTION
+2b0e22ac8af7d36e30c39affd0bb7747 *NAMESPACE
+27a2f60a2a8f1f0f067ad33d9ab4c952 *NEWS
 e49df3361cd141f1fee4be2f4bb460fd *R/CancelReport.R
 12de0690082c4e8086430bd1e6a54284 *R/GetAdminConsoleLog.R
 2150f2d9416253cadf65aee76440a4d6 *R/GetAvailableElements.R
@@ -27,7 +27,6 @@ eea325328019054a79ad5e49cc63f0ed *R/SCAuth.R
 f0c5e1610e8e083693d4f3a5f3dec22e *R/getStatus.R
 2b22f173d42e07e8237c3ce7f46c1367 *R/jsonResponseError.R
 45a87f37c3a39068ffdadcf6658a3b7c *R/postRequest.R
-0f31375770601b967b42c31aeb32f4be *README.md
 cc06af8ffb2a0e83d76c330c4bf0116c *man/CancelReport.Rd
 9cc8c018cdfb12ca9822b5686d1a4267 *man/GetAdminConsoleLog.Rd
 5a186e4002e0cd5faed5f4b4ad8b94bd *man/GetAvailableElements.Rd

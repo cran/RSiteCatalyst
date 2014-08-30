@@ -1,72 +1,127 @@
-#Store credentials as character vector for later usage
-
-utils::globalVariables("SCCredentials")
-
-#Create function defining a global variable to hold user_name and shared_secret
-
-
-#' SiteCatalyst User Name & Shared Secret
+#' SCAuth
+#'
+#' Authorise and store credentials for the Adobe Analytics API
 #' 
-#' Saves SiteCatalyst User Name and Shared Secret for use in authentication.
+#' @title Store Credentials for the Adobe Analytics API
+#'
+#' @param key client id from your app in the Adobe Marketing cloud Dev Center OR if you are using auth.method='legacy', then this is the API username (username:company)
+#' @param secret secret from your app in the Adobe Marketing cloud Dev Center OR if you are using auth.method='legacy', then this is the API shared secret
+#' @param company your company (only required if using OAUTH2 AUTH method)
+#' @param token.file if you would like to save your OAUTH token and other auth details for use in 
+#' future sessions, specify a file here. The method checks for the existence of the file and uses that if available.
+#' @param auth.method defaults to legacy, can be set to 'OAUTH2' to use the newer OAUTH method.
+#' @param debug.mode set global debug mode
+#'
+#' @importFrom httr oauth_app oauth_endpoint oauth2.0_token
+#' @importFrom stringr str_count str_split_fixed
 #' 
-#' This function is run once at the beginning of a session to save credentials.
-#' The credentials list is referenced each time an API call is sent, in order
-#' to create the proper authentication header.
+#' @return Global credentials list 'SC.Credentials'
 #' 
-#' Note that while the Shared Secret is input in plain text in the R script and
-#' stored within an R session in a list, all user credentials are hashed using
-#' the SHA1 algorithm and converted to base64 as required by Adobe before
-#' making the API call.
-#' 
-#' In order to access Reporting API, user must be part of the "Web Service
-#' Access" user group (This is set in the Admin panel).
-#' 
-#' When credentials are set properly, a message of "Authentication succeeded"
-#' will be printed to the console.
-#' 
-#' @param user_name Username:Company
-#' @param shared_secret Shared Secret
-#' @return List named "SCCredentials"
-#' @seealso \code{\link{GetTokenCount}}
-#' @keywords authentication
 #' @examples
-#' 
 #' \dontrun{
+#' #Legacy authentication
+#' SCAuth("key", "secret")
 #' 
-#'     
-#'     SCAuth("username:company", "28fa10193b6006badb981f6d0c370688")
-#'     
-#'     }
-#' 
-#' @export SCAuth
-SCAuth <- function(user_name, shared_secret){
-  #Silence visible binding error
-  
-  SCCredentials <- ""
-  
-  error_flag = 0
-  if(str_count(user_name, ":") != 1){
-    warning("Check User Name. Must have 'username:company' pattern")
-    error_flag = error_flag + 1
-  }
-  if(nchar(shared_secret) != 32){
-    warning("Shared Secret does not have valid number of characters (32)")
-    error_flag = error_flag + 1
-  }
-  
-  if(error_flag >0){
-    stop("Authentication failed due to errors")
-  } else {
-  
-    
-  company <- str_split_fixed(user_name, ":", 2)
-    
-  #Create SCCredentials object in Global Environment
-  SCCredentials <<- c(user_name, shared_secret)
-  
-  #Assign endpoint to 3rd position in credentials
-  SCCredentials[3] <<- GetEndpoint(company[2])
+#' }
+#'
+#' @export
 
-  print("Authentication succeeded")
+SCAuth <- function(key, secret, company='', token.file="", auth.method="legacy", debug.mode = FALSE){
+
+  #Temporarily set SC.Credentials for GetEndpoint function call
+  #SC.Credentials <<- list(key=key, secret=secret)
+  
+  assign("SC.Credentials", list(key=key, secret=secret),  envir = AdobeAnalytics)  
+  
+  if(company==''&&auth.method=='OAUTH2') {
+    stop("ERROR: You must specify a company if using the OAUTH2 auth method.")
+  } else {
+    company <- str_split_fixed(key, ":", 2)[2]
   }
-} #End function bracket  
+  
+  endpoint.url <- GetEndpoint(company)
+  
+  #SC.Credentials <<- "" #This might be defensive overkill
+  
+  assign("SC.Credentials", "", envir = AdobeAnalytics)
+
+  if(auth.method=="OAUTH2") {
+    token.required = TRUE
+
+    if(nchar(token.file)) {
+      if(file.exists(token.file)) {
+        load(token.file)
+        #SC.Credentials <<- SC.storedcredentials
+        
+        assign("SC.Credentials", SC.storedcredentials, envir = AdobeAnalytics)
+        
+        #@TODO: check if token has expired, and whether the endpoint matches before deciding
+        token.required = FALSE
+      }
+    }
+    
+    if(token.required) {
+      sc.api<- oauth_endpoint("https://marketing.adobe.com",
+                            "https://marketing.adobe.com/authorize",
+                            "https://api.omniture.com/token")
+
+      sc.app <- oauth_app("RSiteCatalyst", key, secret)
+      sc.cred <- oauth2.0_token(sc.api, sc.app, scope="ReportSuite Report Company")
+
+      if(!is.null(sc.cred$error)) {
+        print(paste("ERROR:",sc.cred$error))
+        stop(sc.cred$error_description)
+      }
+
+      scc <- list(endpoint.url=endpoint.url,
+                               auth.method=auth.method,
+                               access_token=sc.cred$access_token,
+                               scope=sc.cred$scope,
+                               client_id=sc.cred$client_id,
+                               expires=sc.cred$expires,
+                               debug = debug.mode
+                               )
+      
+      assign("SC.Credentials", scc, envir = AdobeAnalytics)
+
+      if(nchar(token.file)) {
+        SC.storedcredentials <- AdobeAnalytics$SC.Credentials
+        save(SC.storedcredentials,file=token.file)
+      }
+    }
+  } else if (auth.method=="legacy") {
+
+    error.flag = 0
+    if(str_count(key, ":") != 1){
+      warning("Check User Name. Must have 'username:company' pattern")
+      error.flag = error.flag + 1
+    }
+    if(endpoint.url==""){
+      stop("ERROR: No endpoint URL specified.")
+      error.flag = error.flag + 1
+    }
+    if(nchar(secret) != 32){
+      warning("Shared Secret does not have valid number of characters (32)")
+      error.flag = error.flag + 1
+    }
+    
+    if(error.flag >0){
+      stop("Authentication failed due to errors")
+    } else {
+      #Create SCCredentials object in Global Environment
+      #SC.Credentials <<- list(key=key,secret=secret,auth.method=auth.method,endpoint.url=endpoint.url,debug=debug.mode)
+      
+      assign("SC.Credentials", list(key=key,secret=secret,auth.method=auth.method,endpoint.url=endpoint.url,debug=debug.mode), envir = AdobeAnalytics)
+      
+      #save(SC.Credentials,file="~/SC.Credentials")
+      #Assign endpoint to 3rd position in credentials
+      #print("Legacy Auth Stored: This method is deprecated. If possible, use OAUTH.")
+      print("Authentication Succeeded.")
+    }
+
+  }
+
+}
+
+#Create an environment to hold credentials
+AdobeAnalytics <- new.env(parent = emptyenv())

@@ -20,6 +20,11 @@
 
 ApiRequest <- function(body='',func.name='',interval.seconds=2,max.attempts=1,print.attempts=FALSE,skip.queue=FALSE) {
   
+  
+  if(length(AdobeAnalytics$SC.Credentials$auth.method) == 0){
+    stop("Please log in using SCAuth()")
+  }
+  
   #Set debug flag from global credentials
   SC.Debug <- AdobeAnalytics$SC.Credentials$debug
   

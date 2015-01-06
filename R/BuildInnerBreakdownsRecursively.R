@@ -15,7 +15,7 @@
 #'
 #' @return Flat data frame containing all key report data
 #'
-#' @family internal
+#' @export
 #' @keywords internal
 
 BuildInnerBreakdownsRecursively <- function(parent.element,elements,metrics,
@@ -77,7 +77,7 @@ BuildInnerBreakdownsRecursively <- function(parent.element,elements,metrics,
       # build named elements, with classifications if they exist
       elements.named <- elements$id
       for(i in 1:nrow(elements)) {
-        if(nchar(elements[i,]$classification)>0 && !is.na(elements[i,]$classification)) {
+        if(!is.null(elements[i,]$classification) && nchar(elements[i,]$classification)>0) {
           elements.named[i] <- paste0(elements[i,]$id,": ",elements[i,]$classification)
         }
       }

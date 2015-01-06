@@ -90,7 +90,16 @@ ParseTrended <- function(report.data) {
         formatted.df <- temp
       }
   }
+  
+  #Get segment 
+  seg <- report.data$report$segments
 
-  return(formatted.df)
+  #If segment null, make a dummy data frame
+  if(is.null(seg)){
+    seg <- data.frame(list("", ""))
+  }
+  names(seg) <- c("segment.id", "segment.name")
+  
+  return(cbind(formatted.df, seg, row.names = NULL))
 
 }

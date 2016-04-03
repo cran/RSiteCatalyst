@@ -22,7 +22,7 @@
 #' c("::anything::","::anything::","Home") will return the two previous pages leading to the home page.
 #' @param top Number of rows to return (defaults to 1000)
 #' @param start Start row if you do not want to start at #1
-#' @param segment.id Id of Adobe Analytics segment to retrieve the report for
+#' @param segment.id Id(s) of Adobe Analytics segment to retrieve the report for
 #' @param expedite Set to TRUE to expedite the processing of this report
 #' @param interval.seconds How long to wait between attempts
 #' @param max.attempts Number of API attempts before stopping
@@ -64,9 +64,15 @@ QueuePathing <- function(reportsuite.id, date.from, date.to, metric, element, pa
   report.description$reportDescription$locale <- unbox(AdobeAnalytics$SC.Credentials$locale)
   report.description$reportDescription$elementDataEncoding <- unbox("utf8")
 
-  if(segment.id!="") {
+  #If segment is null, apply the standard segment unbox function
+    if(as.list(segment.id)[1]==''){
     report.description$reportDescription$segment_id <- unbox(segment.id)
-  }
+      }
+  #If segment is not null, treat it like a list of metrics.
+    else{
+    report.description$reportDescription$segments <- data.frame( id = segment.id)
+
+    }
   if(expedite!=FALSE) {
     report.description$reportDescription$expedite <- unbox(expedite)
   }

@@ -4,8 +4,8 @@
 \alias{QueueRanked}
 \title{Run a Ranked Report}
 \usage{
-QueueRanked(reportsuite.id, date.from, date.to, metrics, elements, top = 0,
-  start = 0, selected = c(), search = c(), search.type = "or",
+QueueRanked(reportsuite.id, date.from, date.to, metrics, elements, top = 10,
+  start = 1, selected = c(), search = c(), search.type = "or",
   segment.id = "", segment.inline = "", classification = c(),
   data.current = FALSE, expedite = FALSE, interval.seconds = 5,
   max.attempts = 120, validate = TRUE)
@@ -33,7 +33,7 @@ search overrides anything specified using selected}
 
 \item{search.type}{String specifying the search type: 'and', or, 'or' 'not' (defaults to 'or')}
 
-\item{segment.id}{Id of Adobe Analytics segment to retrieve the report for}
+\item{segment.id}{Id(s) of Adobe Analytics segment to retrieve the report for}
 
 \item{segment.inline}{Inline segment definition}
 
@@ -81,6 +81,15 @@ ranked1 <- QueueRanked("your_report_suite",
                        date.to = "2014-04-20",
                        metrics = "pageviews",
                        elements = c("sitesection", "page")
+                       )
+                       
+ ranked2 <- QueueRanked(
+                       reportsuite.id = your_report_suite, 
+                       date.from = "2016-03-30", 
+                       date.to = "2016-03-30",
+                       metrics = "orders",
+                       elements = "product",
+                       classification = "Product Group"
                        )
 
 }

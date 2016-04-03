@@ -17,7 +17,7 @@
 #' @param date.to End date for the report (YYYY-MM-DD)
 #' @param metrics List of metrics to include in the report
 #' @param date.granularity Time granularity of the report (year/month/week/day/hour/''), default to 'day'
-#' @param segment.id Id of Adobe Analytics segment to retrieve the report for
+#' @param segment.id Id(s) of Adobe Analytics segment to retrieve the report for
 #' @param segment.inline Inline segment definition
 #' @param anomaly.detection  Set to TRUE to include forecast data (only valid for day granularity with small date ranges)
 #' @param data.current TRUE or FALSE - Whether to include current data for reports that include today's date
@@ -62,6 +62,7 @@ QueueOvertime <- function(reportsuite.id, date.from, date.to, metrics,
                         date.granularity='day', segment.id='', segment.inline='', anomaly.detection=FALSE,
                         data.current=FALSE, expedite=FALSE,interval.seconds=5,max.attempts=120,validate=TRUE) {
 
+
   # build JSON description
   # we have to use unbox to force jsonlist not put strings into single-element arrays
   report.description <- c()
@@ -70,7 +71,6 @@ QueueOvertime <- function(reportsuite.id, date.from, date.to, metrics,
   report.description$reportDescription$dateTo <- unbox(date.to)
   report.description$reportDescription$reportSuiteID <- unbox(reportsuite.id)
   report.description$reportDescription$dateGranularity <- unbox(date.granularity)
-  report.description$reportDescription$segment_id <- unbox(segment.id)
   report.description$reportDescription$anomalyDetection <- unbox(anomaly.detection)
   report.description$reportDescription$currentData <- unbox(data.current)
   report.description$reportDescription$expedite <- unbox(expedite)
@@ -84,6 +84,16 @@ QueueOvertime <- function(reportsuite.id, date.from, date.to, metrics,
     report.description$reportDescription$segments <- list(segment.inline)
   }
   report.description$reportDescription$metrics = data.frame(id = metrics)
+
+#If segment is null, apply the standard segment unbox function
+  if(as.list(segment.id)[1]==''){
+  report.description$reportDescription$segment_id <- unbox(segment.id)
+    }
+#If segment is not null, treat it like a list of metrics.
+  else{
+  report.description$reportDescription$segments <- data.frame( id = segment.id)
+
+  }
 
   report.data <- SubmitJsonQueueReport(toJSON(report.description),interval.seconds=interval.seconds,max.attempts=max.attempts,validate=validate)
 

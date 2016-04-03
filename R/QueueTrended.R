@@ -34,7 +34,7 @@
 #' search overrides anything specified using selected
 #' @param search.type String specifying the search type: 'and', or, 'or' 'not' (defaults to 'or')
 #' @param date.granularity Time granularity of the report (year/month/week/day/hour), default to 'day'
-#' @param segment.id Id of Adobe Analytics segment to retrieve the report for
+#' @param segment.id Id(s) of Adobe Analytics segment to retrieve the report for
 #' @param segment.inline Inline segment definition
 #' @param classification SAINT classification to use in place of first element. Need to specify element AND classification.
 #' @param anomaly.detection Set to TRUE to include forecast data (only valid for day granularity with small date ranges)
@@ -92,9 +92,15 @@ QueueTrended <- function(reportsuite.id, date.from, date.to, metrics, elements,
   if(segment.inline!="") {
     report.description$reportDescription$segments <- list(segment.inline)
   }
-  if(segment.id!="") {
+  #If segment is null, apply the standard segment unbox function
+    if(as.list(segment.id)[1]==''){
     report.description$reportDescription$segment_id <- unbox(segment.id)
-  }
+      }
+  #If segment is not null, treat it like a list of metrics.
+    else{
+    report.description$reportDescription$segments <- data.frame( id = segment.id)
+
+    }
   if(anomaly.detection==TRUE) {
     report.description$reportDescription$anomalyDetection <- unbox(anomaly.detection)
   }

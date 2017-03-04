@@ -25,4 +25,3 @@ cmsettings<- GetClickMapReporting("your_report_suite")
 cmsettings2 <- GetClickMapReporting(report_suites$rsid)
 }
 }
-

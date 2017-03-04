@@ -12,15 +12,19 @@
 #'
 #' API limitations:
 #' A single segment is supported. Multiple segments are not supported.
+#' 
 #' The following element properties are not supported in Data Warehouse reports:
 #'     - selected
 #'     - search
 #'     - top
 #'     - startingWith
 #'     - sortBy
+#'     
 #' Calculated metrics are not supported.
+#' 
 #' Results for data warehouse reports can be accessed in two ways: directly through the API and
 #' through FTP delivery. Email delivery is not supported.
+#' 
 #' All data warehouse results are paged in chunks of 20 MB. Add "page": to \code{Report.Get} 
 #' to determine the page returned. If no page is specified then the first page is returned.
 #'
@@ -47,6 +51,7 @@
 #' a long report.
 #'
 #' @importFrom jsonlite toJSON unbox
+#' @importFrom utils read.csv
 #'
 #' @return Data frame or report id, if enqueueOnly is TRUE
 #'
@@ -71,7 +76,14 @@
 QueueDataWarehouse <- function(reportsuite.id, date.from, date.to, metrics, elements,
                                date.granularity='day', segment.id='', data.current=TRUE,
                                expedite=FALSE, interval.seconds=5, max.attempts=120,
-                               validate=TRUE,enqueueOnly=TRUE, ftp=ftp) {
+                               validate=TRUE, enqueueOnly=TRUE, ftp='') {
+  
+  if(enqueueOnly == TRUE && ftp == '') {
+    stop("FTP credentials need to be specified when enqueueOnly = TRUE")
+  }
+  
+  #RZ: move this out of public function interface
+  format <- 'csv'
   
   # build JSON description
   # we have to use unbox to force jsonlite not put strings into single-element arrays
@@ -105,8 +117,36 @@ QueueDataWarehouse <- function(reportsuite.id, date.from, date.to, metrics, elem
     report.description$reportDescription$ftp <- unbox(data.frame(ftp))
   }
   
-  report.data <- SubmitJsonQueueReport(toJSON(report.description),interval.seconds=interval.seconds,max.attempts=max.attempts,validate=validate,enqueueOnly=enqueueOnly)
+  #RZ: Override enqueueOnly here so that report id always returned
+  #Then, based on what user actually passed, determine whether it was an FTP report or console
+  report.id <- SubmitJsonQueueReport(toJSON(report.description),interval.seconds=interval.seconds,max.attempts=max.attempts,validate=validate,enqueueOnly=TRUE,format=format)
   
-  return(report.data)
+  #This hack pages over results until an error occurs, which Adobe signals as end of results
+  if(enqueueOnly==FALSE){
+    result <- data.frame()
+    counter <- 1
+    keepgoing <- TRUE
+    while (keepgoing){
+      temp <- tryCatch(
+        GetReport(report.id, 
+                  interval.seconds = interval.seconds,
+                  max.attempts = max.attempts,
+                  format = format, 
+                  print.attempts = TRUE,
+                  page = counter), 
+        error = function(w) data.frame()
+      )
+      if(nrow(temp) > 0){
+        result <- rbind.fill(result, temp)
+        rm(temp)
+        counter <- counter + 1
+      } else {
+        keepgoing <- FALSE
+      }
+    }
+    return(result)
+  }
+  
+  return(report.id)
   
 }

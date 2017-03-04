@@ -5,7 +5,8 @@
 \title{ApiRequest}
 \usage{
 ApiRequest(body = "", func.name = "", interval.seconds = 2,
-  max.attempts = 1, print.attempts = FALSE, skip.queue = FALSE)
+  max.attempts = 1, print.attempts = FALSE, skip.queue = FALSE,
+  format = "json")
 }
 \arguments{
 \item{func.name}{the name of the Adobe Analytics API function that we are calling}
@@ -27,4 +28,3 @@ json
 Internal function - Calls the API and gets response for specified params
 }
 \keyword{internal}
-

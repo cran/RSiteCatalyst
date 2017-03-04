@@ -5,7 +5,7 @@
 \title{Get EnQueued Report by report ID}
 \usage{
 GetReport(report.id, interval.seconds = 10, max.attempts = 3,
-  print.attempts = TRUE)
+  print.attempts = TRUE, format = "json", page = 0)
 }
 \arguments{
 \item{report.id}{report id that's returned by QueueTrended and other functions while used with enqueueOnly parameter set to TRUE}
@@ -15,6 +15,10 @@ GetReport(report.id, interval.seconds = 10, max.attempts = 3,
 \item{max.attempts}{Number of API attempts before stopping}
 
 \item{print.attempts}{Print each attempt for fetching data}
+
+\item{format}{"csv" or "json"}
+
+\item{page}{Page Number of Resuts (QueueDataWarehouse only)}
 }
 \value{
 Data frame
@@ -34,4 +38,3 @@ custom_report <- GetReport(12345678)
 }
 
 }
-

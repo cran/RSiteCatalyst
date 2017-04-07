@@ -1,5 +1,5 @@
 #' @details The QueueDataWarehouse function allows to access to Data WareHouse data
-#' and returns either a json or send a csv to a ftp server.
+#' and returns either json or sends a csv to a ftp server.
 #'
 #' Because of the Reporting API structure, this function requests the
 #' report, then, if \code{enqueueOnly=FALSE}, checks the reporting queue to see if the report is completed,
@@ -11,6 +11,8 @@
 #' using the reportId returned by the QueueDataWarehouse function.
 #'
 #' API limitations:
+#' https://marketing.adobe.com/developer/documentation/data-warehouse/r-report-2
+#' 
 #' A single segment is supported. Multiple segments are not supported.
 #' 
 #' The following element properties are not supported in Data Warehouse reports:
@@ -45,7 +47,7 @@
 #' @param expedite Set to TRUE to expedite the processing of this report
 #' @param interval.seconds How long to wait between attempts
 #' @param max.attempts Number of API attempts before stopping
-#' @param validate Weather to submit report definition for validation before requesting the data.
+#' @param validate whether to submit report definition for validation before requesting the data.
 #' @param enqueueOnly only enqueue the report, don't get the data. returns report id, which you can later use to get the data
 #' @param ftp FTP client parameters, only used if enqueueOnly=TRUE. Double check ftp parameters before requesting
 #' a long report.
@@ -101,7 +103,17 @@ QueueDataWarehouse <- function(reportsuite.id, date.from, date.to, metrics, elem
   
   
   #If segment is null, apply the standard segment unbox function
-  report.description$reportDescription$segment <- unbox(segment.id)
+  #report.description$reportDescription$segments <- unbox(segment.id)
+  
+  if(as.list(segment.id)[1]==''){
+    #report.description$reportDescription$segment_id <- unbox(segment.id)
+    report.description$reportDescription$segments <- unbox(segment.id)
+  }
+  #If segment is not null, treat it like a list of metrics.
+  else{
+    report.description$reportDescription$segments <- data.frame( id = segment.id)
+    
+  }
   
   if(expedite==TRUE) {
     report.description$reportDescription$expedite <- unbox(expedite)

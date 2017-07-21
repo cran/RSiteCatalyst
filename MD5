@@ -1,7 +1,7 @@
-d08f68db048a902d0567c5721fcec027 *DESCRIPTION
+57065b32f70fe8a416cdf84cc7ef3e92 *DESCRIPTION
 27a8a4cd1b4a0d5bc2256aaddab285bf *LICENSE
 a7ae15d673e2f580583b79e282ae78eb *NAMESPACE
-fbcc68d46cf8b6c6f238c0d5859ab8ae *NEWS
+81e0d780f72d1d212e7adcf99abb583c *NEWS
 31e8aec62a1e515b4c81520facb3f3a8 *R/ApiRequest.R
 a6af2b7abc13a9c7fdf4a6bada729a72 *R/BuildClassificationValueSegment.R
 91d2fe0beb3788ba943cb33f7cab1b68 *R/BuildInnerBreakdownsRecursively.R
@@ -85,8 +85,8 @@ a743624a220fe3cd4ceabc4d6b40d7b3 *R/QueueOvertime.R
 c3fac96d3ca0d181af3140e6511a11db *R/QueueRanked.R
 d943e03a03b4953900bec88c87a4bba4 *R/QueueSummary.R
 129f5725b5cf8d3170456fe508ea03a1 *R/QueueTrended.R
-c95c327a5515de28a0e4de1dc5f2eb3a *R/RSiteCatalyst.R
-f3a5251cfd539d1ccd8976a3fc1ab646 *R/SCAuth.R
+3f3ea46799eede8ec9e8f7ae4c1c3ec5 *R/RSiteCatalyst.R
+9a808acd92abea83d60922707332bc23 *R/SCAuth.R
 1f01839ab714f563e5324f878f96add7 *R/SaveRealTimeSettings.R
 a95b4acf2ab8b79ae0309d12df6914e2 *R/SubmitJsonQueueReport.R
 fdb477ee2272d590eecbe4a129e7766a *R/ValidateReport.R
@@ -176,7 +176,7 @@ ba7269feeea71bd45d357c69f9ccbe59 *man/QueuePathing.Rd
 c35332a6bc9cc571ec7eddd33398df53 *man/QueueRanked.Rd
 bcde92d1f68c760de57f39d7ccf7ab1f *man/QueueSummary.Rd
 998f5e1bb3eb531e7a4464eda1da08cc *man/QueueTrended.Rd
-2e8c4b7810396e5cea3485be3182e5a9 *man/RSiteCatalyst.Rd
+bc8abd38bd4ea50147392519035e83bf *man/RSiteCatalyst.Rd
 33bb08329db9da1d35526d07c9469b86 *man/SCAuth.Rd
 65c16f92f3541f89958a43a1c9928752 *man/SaveRealTimeSettings.Rd
 ece81cb89f71f767bfcbd6d3f52c7c2d *man/SubmitJsonQueueReport.Rd
@@ -257,7 +257,7 @@ a9ea9b3117372a55cb54354f298911bd *tests/testthat/test-getuniquevisitorvariable.R
 fb2b563bad73655b0b30ffa3b35a4dc5 *tests/testthat/test-getversionaccess.R
 30269d91bf874c2e9012894cdcf41c25 *tests/testthat/test-getvideosettings.R
 35c72cd54c5548e53ae109e155ffc32e *tests/testthat/test-getvirtualreportsuitesettings.R
-3a5785f49e6588657b687b9e260abb52 *tests/testthat/test-queuedatawarehouse.R
+1e10e6af8250b2346be7075e604c2467 *tests/testthat/test-queuedatawarehouse.R
 a59e94d9a6a5f8002041d56a96164c72 *tests/testthat/test-queuefallout.R
 65b8151d0b3dbcbcb4a612ff89b31da7 *tests/testthat/test-queueovertime.R
 5641669bb25e6dffb40bb9ccd3faf5d5 *tests/testthat/test-queuepathing.R

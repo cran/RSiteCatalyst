@@ -1,7 +1,7 @@
-57065b32f70fe8a416cdf84cc7ef3e92 *DESCRIPTION
+e1cfe1107df6be9ec2afb7f8684d3ad2 *DESCRIPTION
 27a8a4cd1b4a0d5bc2256aaddab285bf *LICENSE
 a7ae15d673e2f580583b79e282ae78eb *NAMESPACE
-81e0d780f72d1d212e7adcf99abb583c *NEWS
+5b41a492de08ad0c658ddd44bd80a91c *NEWS
 31e8aec62a1e515b4c81520facb3f3a8 *R/ApiRequest.R
 a6af2b7abc13a9c7fdf4a6bada729a72 *R/BuildClassificationValueSegment.R
 91d2fe0beb3788ba943cb33f7cab1b68 *R/BuildInnerBreakdownsRecursively.R
@@ -53,7 +53,7 @@ eb0fea1f514343ab731f13bd27ec7dbb *R/GetProps.R
 8187f3b46e524165af5faec98eb49679 *R/GetRealTimeSettings.R
 bae597e2d9c35f990b65bdc520a5562c *R/GetReport.R
 9211e414432d71f831ad1b2e473e9830 *R/GetReportDescription.R
-156c12f6bb47f5c8988c77edd740ec54 *R/GetReportSuiteGroups.R
+9bdde633bab2be1a63498247378449fa *R/GetReportSuiteGroups.R
 a3e5d1efef883a1c28eb2c3af07c43aa *R/GetReportSuites.R
 5d35785df4a079b0a06c559011a43763 *R/GetReportsByIds.R
 d6b0acbe137e8c07a60f1092e28bef72 *R/GetScheduledSpike.R
@@ -85,7 +85,7 @@ a743624a220fe3cd4ceabc4d6b40d7b3 *R/QueueOvertime.R
 c3fac96d3ca0d181af3140e6511a11db *R/QueueRanked.R
 d943e03a03b4953900bec88c87a4bba4 *R/QueueSummary.R
 129f5725b5cf8d3170456fe508ea03a1 *R/QueueTrended.R
-3f3ea46799eede8ec9e8f7ae4c1c3ec5 *R/RSiteCatalyst.R
+7b9d43c5fa6b0a0a9fbfb6641ec6c731 *R/RSiteCatalyst.R
 9a808acd92abea83d60922707332bc23 *R/SCAuth.R
 1f01839ab714f563e5324f878f96add7 *R/SaveRealTimeSettings.R
 a95b4acf2ab8b79ae0309d12df6914e2 *R/SubmitJsonQueueReport.R
@@ -176,7 +176,7 @@ ba7269feeea71bd45d357c69f9ccbe59 *man/QueuePathing.Rd
 c35332a6bc9cc571ec7eddd33398df53 *man/QueueRanked.Rd
 bcde92d1f68c760de57f39d7ccf7ab1f *man/QueueSummary.Rd
 998f5e1bb3eb531e7a4464eda1da08cc *man/QueueTrended.Rd
-bc8abd38bd4ea50147392519035e83bf *man/RSiteCatalyst.Rd
+13523e9607e7df8a06d6127df869d3b4 *man/RSiteCatalyst.Rd
 33bb08329db9da1d35526d07c9469b86 *man/SCAuth.Rd
 65c16f92f3541f89958a43a1c9928752 *man/SaveRealTimeSettings.Rd
 ece81cb89f71f767bfcbd6d3f52c7c2d *man/SubmitJsonQueueReport.Rd

@@ -1,7 +1,7 @@
-e1cfe1107df6be9ec2afb7f8684d3ad2 *DESCRIPTION
+f699099b8996c72442f44032dcc80797 *DESCRIPTION
 27a8a4cd1b4a0d5bc2256aaddab285bf *LICENSE
-a7ae15d673e2f580583b79e282ae78eb *NAMESPACE
-5b41a492de08ad0c658ddd44bd80a91c *NEWS
+4df0a8cf1668e8e1f303281ebe4a3ce2 *NAMESPACE
+f96674319137991a5ee77cc6fe255cbc *NEWS
 31e8aec62a1e515b4c81520facb3f3a8 *R/ApiRequest.R
 a6af2b7abc13a9c7fdf4a6bada729a72 *R/BuildClassificationValueSegment.R
 91d2fe0beb3788ba943cb33f7cab1b68 *R/BuildInnerBreakdownsRecursively.R
@@ -29,6 +29,7 @@ fc3361450a8e9059324e3c1a2ab25e8e *R/GetEcommerce.R
 1d500f46b8e864c4c8f1562d6b6f3324 *R/GetFeeds.R
 45679cdcc301477dc1755d385c8f377b *R/GetFunctions.R
 2a2b73d1faffab43e760cacfbe7f6a95 *R/GetGeoSegmentation.R
+e302696019c4fb74f83237b058d5c4f4 *R/GetGroup.R
 c887383478679ade40850b7e371a07f6 *R/GetGroups.R
 50152abb3236ae3b08301639236093c4 *R/GetIPAddressExclusions.R
 b81da40159e74b06145fe6369278e83a *R/GetIPObfuscation.R
@@ -85,8 +86,8 @@ a743624a220fe3cd4ceabc4d6b40d7b3 *R/QueueOvertime.R
 c3fac96d3ca0d181af3140e6511a11db *R/QueueRanked.R
 d943e03a03b4953900bec88c87a4bba4 *R/QueueSummary.R
 129f5725b5cf8d3170456fe508ea03a1 *R/QueueTrended.R
-7b9d43c5fa6b0a0a9fbfb6641ec6c731 *R/RSiteCatalyst.R
-9a808acd92abea83d60922707332bc23 *R/SCAuth.R
+f465bc55c907d0fe8dd017b676b36236 *R/RSiteCatalyst.R
+956465ffcae37c59fd69f3e2b969750d *R/SCAuth.R
 1f01839ab714f563e5324f878f96add7 *R/SaveRealTimeSettings.R
 a95b4acf2ab8b79ae0309d12df6914e2 *R/SubmitJsonQueueReport.R
 fdb477ee2272d590eecbe4a129e7766a *R/ValidateReport.R
@@ -120,6 +121,7 @@ c3d12f3a5c5b581cca7ca493cb234259 *man/GetEcommerce.Rd
 59ebd060ee04f32bc89bbf00d1a98f4f *man/GetFeeds.Rd
 0882be4428d04b703cf69ba9eb5760e7 *man/GetFunctions.Rd
 b2a14f22e6ea26a476cd4ef67b3a30c8 *man/GetGeoSegmentation.Rd
+769cde8c4dfc7e58eb2c0d5db8217fe0 *man/GetGroup.Rd
 9f23417c44dc974362bf68d5c603bf0a *man/GetGroups.Rd
 a4ea09ec744671bf57d0bc6ba2932157 *man/GetIPAddressExclusions.Rd
 dfa3cf0965dad79bf4457bbfceb59b1d *man/GetIPObfuscation.Rd
@@ -176,7 +178,7 @@ ba7269feeea71bd45d357c69f9ccbe59 *man/QueuePathing.Rd
 c35332a6bc9cc571ec7eddd33398df53 *man/QueueRanked.Rd
 bcde92d1f68c760de57f39d7ccf7ab1f *man/QueueSummary.Rd
 998f5e1bb3eb531e7a4464eda1da08cc *man/QueueTrended.Rd
-13523e9607e7df8a06d6127df869d3b4 *man/RSiteCatalyst.Rd
+c1a3e01e7c3dbcd2f03f60ed18fac54e *man/RSiteCatalyst.Rd
 33bb08329db9da1d35526d07c9469b86 *man/SCAuth.Rd
 65c16f92f3541f89958a43a1c9928752 *man/SaveRealTimeSettings.Rd
 ece81cb89f71f767bfcbd6d3f52c7c2d *man/SubmitJsonQueueReport.Rd
@@ -240,7 +242,6 @@ f36c05fc76320701f611ce620370f97b *tests/testthat/test-getmobileappreporting.R
 ec2906daecbe74525837ce44ff21dc3f *tests/testthat/test-getrealtimereport.R
 d241b6f6d88c7e6ca3d673ee07684e85 *tests/testthat/test-getrealtimesettings.R
 cc9177bbddc3b504e263b7b2d78df8dc *tests/testthat/test-getreport.R
-068241332cf9cc2457b40f43e15c866b *tests/testthat/test-getreportdescription.R
 050af7503608f1eae6600919bf8d53ec *tests/testthat/test-getreportsbyids.R
 52ffa1c30d14abec86f4fcf98b0d8db2 *tests/testthat/test-getreportsuitegroups.R
 853af42f267228685d2868d57790beb6 *tests/testthat/test-getreportsuites.R
